@@ -14,6 +14,9 @@ import com.ecommerce.orderservice.Model.OrderLineItem;
 import com.ecommerce.orderservice.Model.Order;
 import com.ecommerce.orderservice.Repository.OrderRepository;
 
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +29,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
+	private ObservationRegistry observationRegistry;
 
     public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
@@ -42,22 +46,27 @@ public class OrderService {
                 .map(OrderLineItem::getSkuCode)
                 .toList();
 
-        InventoryResponse[] inventoryResponseArray = webClientBuilder.build().get()
-                    .uri("http://localhost:8082/api/inventory",
-                            uriBuilder -> uriBuilder.queryParam("skuCodes", skuCodes).build())
-                    .retrieve()
-                    .bodyToMono(InventoryResponse[].class)
-                    .block();
-
-        boolean allProductsInStock = Arrays.stream(inventoryResponseArray)
-                    .allMatch(InventoryResponse::isInStock);
-
-        if (allProductsInStock) {
-        	orderRepository.save(order);
-            return "Order Placed";
-        } else {
-            throw new IllegalArgumentException("Product is not in stock, please try again later!");
-        }
+        Observation inventoryServiceObservation = Observation.createNotStarted("inventory-service-lookup",
+                this.observationRegistry);
+        inventoryServiceObservation.lowCardinalityKeyValue("call", "inventory-service");
+        return inventoryServiceObservation.observe(() -> {
+	        InventoryResponse[] inventoryResponseArray = webClientBuilder.build().get()
+	                    .uri("http://inventory-service/api/inventory",
+	                            uriBuilder -> uriBuilder.queryParam("skuCodes", skuCodes).build())
+	                    .retrieve()
+	                    .bodyToMono(InventoryResponse[].class)
+	                    .block();
+	
+	        boolean allProductsInStock = Arrays.stream(inventoryResponseArray)
+	                    .allMatch(InventoryResponse::isInStock);
+	
+	        if (allProductsInStock) {
+	        	orderRepository.save(order);
+	            return "Order Placed";
+	        } else {
+	            throw new IllegalArgumentException("Product is not in stock, please try again later!");
+	        }
+        });
         
     }
 
