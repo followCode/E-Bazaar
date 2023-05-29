@@ -24,7 +24,7 @@ This project makes use of the following patterns -
 - Database per Service (MongoDB, MySQL)
 - Event-Driven Architecture (Apache Kafka)
 
-##Setup
+## Setup
 Database Setup:
 - Install MySQL and setup the port, user and password.
 - Inside application.properties in product-service, change the database credentials
