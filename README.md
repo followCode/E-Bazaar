@@ -1,5 +1,5 @@
 # E-Bazaar
-E-Bazaar is an e-commerce backend developed with a microservice architecture. It provides features for storing information about various products, their availability, and ordering.
+E-Bazaar is an e-commerce backend developed with a microservice architecture. It provides features for storing information about various products, their availability, and placing order and sending notification for the same.
 
 Here are some of the benefits of using a microservice architecture for e-commerce backends:
 
