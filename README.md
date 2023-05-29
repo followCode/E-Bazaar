@@ -13,8 +13,8 @@ Microservices present in this project -
 - Order Service - for placing orders, it connects to inventory for checking availability and notification service for sending notifications.
 - Notification Service - for sending notifications 
 
+![Screenshot (60)](https://github.com/followCode/E-Bazaar/assets/47175098/7683e553-8807-4d40-ad21-87e29dc9707c)
 
-![Screenshot (60)](https://github.com/followCode/E-Bazaar/assets/47175098/a1a7ff34-5432-448c-8cb6-8d96cb935601)
 
 This project makes use of the following patterns -
 - Service discorvery (Netflix Eureka)
