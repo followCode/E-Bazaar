@@ -38,11 +38,15 @@ docker run -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin
 
 - Go to url - http://localhost:8080 and go to realm settings
 - Click on action -> Partial import
-- Select the file - 'spring-cloud-client.json' and check all
+- Select the file - realm/realm-export and check all
 - Click on import
 
 Kafka Setup
-- 
+- Go to the terminal --> move into the project 
+- Execute the command : docker compose up -d
+
+Services
+-Run the services like usual spring boot project
 
 
 
